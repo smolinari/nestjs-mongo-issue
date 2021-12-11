@@ -1,22 +1,27 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {Exclude} from 'class-transformer';
-import {Profile} from 'src/profile/entity/profile.entity';
-import * as mongoose from 'mongoose';
+import { Profile } from 'src/profile/entity/profile.entity';
+import { Types } from 'mongoose';
 
-@Schema({collection: 'users'})
+@Schema({ collection: 'users' })
 /**
  * @class User
  */
 export class User {
-  @Prop()
-  @Exclude()
-  _id: mongoose.Schema.Types.ObjectId;
+  id: string;
 
   @Prop()
   username: string;
 
-  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Profile'})
+  @Prop({type: Types.ObjectId, ref: 'Profile'})
   profile: Profile;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.set('toObject', {
+  virtuals: true,
+  transform: (doc, ret, options) => {
+    // remove the _id of every document before returning the result
+    delete ret._id;
+    return ret;
+  }})
+export { UserSchema }

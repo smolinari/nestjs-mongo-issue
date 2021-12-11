@@ -1,8 +1,7 @@
-import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
-import {Profile} from 'src/profile/entity/profile.entity';
-import {User} from '../entity/user.entity';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from '../entity/user.entity';
 
 @Injectable()
 /**
@@ -27,15 +26,16 @@ export class UserService {
    * @param {(boolean | undefined)} profile
    * @returns {Promise<User>}
    */
-  public async getByName(username: string, profile?: boolean): Promise<User> {
+  public async getByName(username: string): Promise<User> {
     const user = await this.userModel
-      .findOne({username})
-      .populate('profile', null, Profile.name);
+      .findOne({ username })
+      .populate('profile');
+    
+    console.log('user', user)
 
     if (!user) {
       return {} as User;
     }
-
     return user.toObject();
   }
-}
+ }
